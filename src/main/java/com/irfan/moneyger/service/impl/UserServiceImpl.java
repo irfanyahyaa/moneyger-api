@@ -36,13 +36,20 @@ public class UserServiceImpl implements UserService {
         return userResponseBuilder(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public UserResponse getById(String id) {
+    public UserResponse getByIdDTO(String id) {
         MUser user = findByIdOrThrowException(id);
 
         return userResponseBuilder(user);
     }
 
+    @Override
+    public MUser getByIdEntity(String id) {
+        return findByIdOrThrowException(id);
+    }
+
+    @Transactional(readOnly = true)
     @Override
     public UserResponse getAll() {
         return null;
@@ -85,6 +92,23 @@ public class UserServiceImpl implements UserService {
                 .lastName(currUser.getLastName())
                 .balance(currUser.getBalance())
                 .isActive(isActive)
+                .build();
+
+        return userResponseBuilder(updatedUser);
+    }
+
+    @Override
+    public UserResponse updateBalanceById(String id, Long balance) {
+        MUser currUser = findByIdOrThrowException(id);
+
+        userRepository.updateBalanceQuery(id, balance);
+
+        MUser updatedUser = MUser.builder()
+                .id(currUser.getId())
+                .firstName(currUser.getFirstName())
+                .lastName(currUser.getLastName())
+                .balance(balance)
+                .isActive(currUser.getIsActive())
                 .build();
 
         return userResponseBuilder(updatedUser);

@@ -32,4 +32,11 @@ public interface UserRepository extends JpaRepository<MUser, String> {
         @Param("id") String id,
         @Param("isActive") Boolean isActive
     );
+
+    @Modifying
+    @Query(value = "UPDATE m_user SET balance = :balance WHERE id = :id", nativeQuery = true)
+    void updateBalanceQuery(
+        @Param("id") String id,
+        @Param("balance") Long balance
+    );
 }

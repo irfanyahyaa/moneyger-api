@@ -28,10 +28,10 @@ public class TTransaction {
     @Column(name = "category", nullable = false)
     private String category;
 
-    @Column(name = "income", nullable = false)
+    @Column(name = "income")
     private Long income;
 
-    @Column(name = "expense", nullable = false)
+    @Column(name = "expense")
     private Long expense;
 
     @Column(name = "balance", nullable = false)

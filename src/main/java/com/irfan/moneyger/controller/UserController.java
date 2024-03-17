@@ -5,14 +5,11 @@ import com.irfan.moneyger.dto.request.UserRequest;
 import com.irfan.moneyger.dto.response.UserResponse;
 import com.irfan.moneyger.dto.response.CommonResponse;
 import com.irfan.moneyger.service.UserService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.awt.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,7 +44,7 @@ public class UserController {
     public ResponseEntity<CommonResponse<UserResponse>> getUserById(
             @PathVariable("id") String id
     ) {
-        UserResponse userResponse = userService.getById(id);
+        UserResponse userResponse = userService.getByIdDTO(id);
 
         CommonResponse<UserResponse> response = CommonResponse.<UserResponse>builder()
                 .statusCode(HttpStatus.OK.value())
