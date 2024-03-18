@@ -2,14 +2,18 @@ package com.irfan.moneyger.controller;
 
 import com.irfan.moneyger.constant.APIUrl;
 import com.irfan.moneyger.dto.request.UserRequest;
+import com.irfan.moneyger.dto.response.PagingResponse;
 import com.irfan.moneyger.dto.response.UserResponse;
 import com.irfan.moneyger.dto.response.CommonResponse;
 import com.irfan.moneyger.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,9 +63,41 @@ public class UserController {
     @GetMapping(
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<CommonResponse<UserResponse>> getAllUsers() {
-        UserResponse userResponse = userService.getAll();
-        return null;
+    public ResponseEntity<CommonResponse<List<UserResponse>>> getAllUsers(
+            @RequestParam(name = "page", defaultValue = "1") Integer page,
+            @RequestParam(name = "size", defaultValue = "10") Integer size,
+            @RequestParam(name = "sortBy", defaultValue = "firstName") String sortBy,
+            @RequestParam(name = "direction", defaultValue = "asc") String direction,
+            @RequestParam(name = "firstName", required = false) String firstName
+
+    ) {
+        UserRequest userRequest = UserRequest.builder()
+                .page(page)
+                .size(size)
+                .sortBy(sortBy)
+                .direction(direction)
+                .firstName(firstName)
+                .build();
+        Page<UserResponse> user = userService.getAll(userRequest);
+
+        PagingResponse pagingResponse = PagingResponse.builder()
+                .totalPages(user.getTotalPages())
+                .totalElement(user.getTotalElements())
+                .page(user.getPageable().getPageNumber() + 1)
+                .size(user.getPageable().getPageSize())
+                .hasNext(user.hasNext())
+                .hasPrevious(user.hasPrevious())
+                .build();
+
+        CommonResponse<List<UserResponse>> response = CommonResponse.<List<UserResponse>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("users fetched successfully")
+                .data(user.getContent())
+                .paging(pagingResponse)
+                .build();
+
+        return ResponseEntity
+                .ok(response);
     }
 
     @PutMapping(

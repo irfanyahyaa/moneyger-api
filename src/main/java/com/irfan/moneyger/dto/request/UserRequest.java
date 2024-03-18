@@ -13,4 +13,8 @@ public class UserRequest {
     private String lastName;
     private Long balance;
     private Boolean isActive;
+    private Integer page;
+    private Integer size;
+    private String sortBy;
+    private String direction;
 }

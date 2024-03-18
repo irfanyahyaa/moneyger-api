@@ -5,7 +5,13 @@ import com.irfan.moneyger.dto.response.UserResponse;
 import com.irfan.moneyger.entity.MUser;
 import com.irfan.moneyger.repository.UserRepository;
 import com.irfan.moneyger.service.UserService;
+import com.irfan.moneyger.specification.UserSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +30,9 @@ public class UserServiceImpl implements UserService {
         String userId = UUID.randomUUID().toString();
 
         userRepository.createQuery(
-            userId,
-            userRequest.getFirstName(),
-            userRequest.getLastName(),
+                userId,
+                userRequest.getFirstName(),
+                userRequest.getLastName(),
                 0L,
                 true
         );
@@ -51,8 +57,14 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(readOnly = true)
     @Override
-    public UserResponse getAll() {
-        return null;
+    public Page<UserResponse> getAll(UserRequest userRequest) {
+        if (userRequest.getPage() <= 0) userRequest.setPage(1);
+
+        Sort sort = Sort.by(Sort.Direction.fromString(userRequest.getDirection()), userRequest.getSortBy());
+        Pageable pageable = PageRequest.of((userRequest.getPage() - 1), userRequest.getSize(), sort);
+        Specification<MUser> specification = UserSpecification.getSpecification(userRequest);
+
+        return userRepository.findAll(specification, pageable).map(this::userResponseBuilder);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -61,10 +73,10 @@ public class UserServiceImpl implements UserService {
         MUser currUser = findByIdOrThrowException(userRequest.getId());
 
         userRepository.updateQuery(
-            userRequest.getId(),
-            userRequest.getFirstName(),
-            userRequest.getLastName(),
-            userRequest.getBalance()
+                userRequest.getId(),
+                userRequest.getFirstName(),
+                userRequest.getLastName(),
+                userRequest.getBalance()
         );
 
 

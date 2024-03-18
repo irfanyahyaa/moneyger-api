@@ -2,11 +2,12 @@ package com.irfan.moneyger.repository;
 
 import com.irfan.moneyger.entity.MUser;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface UserRepository extends JpaRepository<MUser, String> {
+public interface UserRepository extends JpaRepository<MUser, String>, JpaSpecificationExecutor<MUser> {
     @Modifying
     @Query(value = "INSERT INTO m_user (id, first_name, last_name, balance, is_active) VALUES(:id, :firstName, :lastName, :balance, :isActive)", nativeQuery = true)
     void createQuery(
