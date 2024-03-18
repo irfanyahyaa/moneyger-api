@@ -14,4 +14,8 @@ public class TransactionRequest {
     private String category;
     private Long income;
     private Long expense;
+    private Integer page;
+    private Integer size;
+    private String sortBy;
+    private String direction;
 }

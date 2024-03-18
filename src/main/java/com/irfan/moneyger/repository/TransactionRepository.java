@@ -2,12 +2,13 @@ package com.irfan.moneyger.repository;
 
 import com.irfan.moneyger.entity.TTransaction;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 
-public interface TransactionRepository extends JpaRepository<TTransaction, String> {
+public interface TransactionRepository extends JpaRepository<TTransaction, String>, JpaSpecificationExecutor<TTransaction> {
     @Modifying
     @Query(value = "INSERT INTO t_transaction (id, user_id, date, category, income, expense, balance) VALUES (:id, :userId, :date, :category, :income, :expense, :balance)", nativeQuery = true)
     void createQuery(

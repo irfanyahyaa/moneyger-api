@@ -1,23 +1,23 @@
 package com.irfan.moneyger.specification;
 
-import com.irfan.moneyger.dto.request.UserRequest;
-import com.irfan.moneyger.entity.MUser;
+import com.irfan.moneyger.dto.request.TransactionRequest;
+import com.irfan.moneyger.entity.TTransaction;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserSpecification {
-    public static Specification<MUser> getSpecification(UserRequest userRequest) {
+public class TransactionSpecification {
+    public static Specification<TTransaction> getSpecification(TransactionRequest transactionRequest) {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (userRequest.getFirstName() != null) {
+            if (transactionRequest.getId() != null) {
                 predicates.add(
                         criteriaBuilder.like(
-                                criteriaBuilder.lower(root.get("firstName")),
-                                "%" + userRequest.getFirstName().toLowerCase() + "%"
+                                root.get("id"),
+                                "%" + transactionRequest.getId() + "%"
                         )
                 );
             }

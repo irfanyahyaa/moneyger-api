@@ -11,33 +11,33 @@ public interface UserRepository extends JpaRepository<MUser, String>, JpaSpecifi
     @Modifying
     @Query(value = "INSERT INTO m_user (id, first_name, last_name, balance, is_active) VALUES(:id, :firstName, :lastName, :balance, :isActive)", nativeQuery = true)
     void createQuery(
-        @Param("id") String id,
-        @Param("firstName") String firstName,
-        @Param("lastName") String lastName,
-        @Param("balance") Long balance,
-        @Param("isActive") Boolean isActive
+            @Param("id") String id,
+            @Param("firstName") String firstName,
+            @Param("lastName") String lastName,
+            @Param("balance") Long balance,
+            @Param("isActive") Boolean isActive
     );
 
     @Modifying
     @Query(value = "UPDATE m_user SET first_name = :firstName, last_name = :lastName, balance = :balance WHERE id = :id", nativeQuery = true)
     void updateQuery(
-        @Param("id") String id,
-        @Param("firstName") String firstName,
-        @Param("lastName") String lastName,
-        @Param("balance") Long balance
+            @Param("id") String id,
+            @Param("firstName") String firstName,
+            @Param("lastName") String lastName,
+            @Param("balance") Long balance
     );
 
     @Modifying
     @Query(value = "UPDATE m_user SET is_active = :isActive WHERE id = :id", nativeQuery = true)
     void updateIsActiveQuery(
-        @Param("id") String id,
-        @Param("isActive") Boolean isActive
+            @Param("id") String id,
+            @Param("isActive") Boolean isActive
     );
 
     @Modifying
     @Query(value = "UPDATE m_user SET balance = :balance WHERE id = :id", nativeQuery = true)
     void updateBalanceQuery(
-        @Param("id") String id,
-        @Param("balance") Long balance
+            @Param("id") String id,
+            @Param("balance") Long balance
     );
 }
