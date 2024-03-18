@@ -8,7 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class TransactionRequest {
+    private String id;
     private String userId;
+    private String date;
     private String category;
     private Long income;
     private Long expense;

@@ -7,6 +7,7 @@ import com.irfan.moneyger.entity.TTransaction;
 import com.irfan.moneyger.repository.TransactionRepository;
 import com.irfan.moneyger.service.TransactionService;
 import com.irfan.moneyger.service.UserService;
+import com.irfan.moneyger.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -53,8 +54,8 @@ public class TransactionServiceImpl implements TransactionService {
                 transactionRequest.getUserId(),
                 date,
                 transactionRequest.getCategory(),
-                transactionRequest.getIncome(),
-                transactionRequest.getExpense(),
+                income,
+                expense,
                 balance
         );
 
@@ -66,23 +67,62 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public TransactionResponse getByIdDTO(String id) {
+    public TransactionResponse getByIdDTO(String transactionId) {
+        TTransaction transaction = findByIdOrThrowException(transactionId);
+
+        return transactionResponseBuilder(transaction);
+    }
+
+    @Override
+    public TransactionResponse getAllByIdDTO(String userId) {
         return null;
     }
 
     @Override
-    public TransactionResponse getAll() {
-        return null;
-    }
+    public TransactionResponse update(TransactionRequest transactionRequest) {
+        TTransaction currTransaction = findByIdOrThrowException(transactionRequest.getId());
 
-    @Override
-    public TransactionResponse update(TransactionRequest userRequest) {
-        return null;
-    }
+        Date updatedDate = DateUtil.parseDate(transactionRequest.getDate(), "yyyy-MM-dd");
 
-    @Override
-    public TransactionResponse updateIsActiveById(String id, Boolean isActive) {
-        return null;
+        if (transactionRequest.getIncome() == null && transactionRequest.getExpense() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "income and expense cannot be null");
+        } else if ((transactionRequest.getIncome() != null && transactionRequest.getIncome() != 0L) && (transactionRequest.getExpense() != null && transactionRequest.getExpense() != 0L)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "fill either income or expense");
+        }
+
+        Long income = transactionRequest.getIncome();
+        if (income == null) {
+            income = 0L;
+        }
+
+        Long expense = transactionRequest.getExpense();
+        if (expense == null) {
+            expense = 0L;
+        }
+
+        Long balance = currTransaction.getBalance() + (income - expense);
+
+        transactionRepository.updateQuery(
+                currTransaction.getId(),
+                transactionRequest.getUserId(),
+                updatedDate,
+                transactionRequest.getCategory(),
+                transactionRequest.getIncome(),
+                transactionRequest.getExpense(),
+                balance
+        );
+
+        TTransaction updatedTransaction = TTransaction.builder()
+                .id(currTransaction.getId())
+                .user(currTransaction.getUser())
+                .date(updatedDate)
+                .category(transactionRequest.getCategory())
+                .income(transactionRequest.getIncome())
+                .expense(transactionRequest.getExpense())
+                .balance(balance)
+                .build();
+
+        return transactionResponseBuilder(updatedTransaction);
     }
 
     public TTransaction findByIdOrThrowException(String id) {

@@ -4,13 +4,11 @@ import com.irfan.moneyger.dto.request.TransactionRequest;
 import com.irfan.moneyger.dto.response.TransactionResponse;
 
 public interface TransactionService {
-    TransactionResponse create(TransactionRequest userRequest);
+    TransactionResponse create(TransactionRequest transactionRequest);
 
-    TransactionResponse getByIdDTO(String id);
+    TransactionResponse getByIdDTO(String transactionId);
 
-    TransactionResponse getAll();
+    TransactionResponse getAllByIdDTO(String userId);
 
-    TransactionResponse update(TransactionRequest userRequest);
-
-    TransactionResponse updateIsActiveById(String id, Boolean isActive);
+    TransactionResponse update(TransactionRequest transactionRequest);
 }

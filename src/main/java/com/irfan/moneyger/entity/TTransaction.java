@@ -21,7 +21,7 @@ public class TTransaction {
     @JoinColumn(name = "user_id", nullable = false)
     private MUser user;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     @Column(name = "date", nullable = false)
     private Date date;
 

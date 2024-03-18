@@ -60,6 +60,7 @@ public class UserController {
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<CommonResponse<UserResponse>> getAllUsers() {
+        UserResponse userResponse = userService.getAll();
         return null;
     }
 

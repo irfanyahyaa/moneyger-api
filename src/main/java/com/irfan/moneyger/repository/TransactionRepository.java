@@ -19,4 +19,16 @@ public interface TransactionRepository extends JpaRepository<TTransaction, Strin
             Long expense,
             Long balance
     );
+
+    @Modifying
+    @Query(value = "UPDATE t_transaction SET user_id = :userId, date = :date, category = :category, income = :income, expense = :expense, balance = :balance WHERE id = :id", nativeQuery = true)
+    void updateQuery(
+            String id,
+            String userId,
+            Date date,
+            String category,
+            Long income,
+            Long expense,
+            Long balance
+    );
 }
